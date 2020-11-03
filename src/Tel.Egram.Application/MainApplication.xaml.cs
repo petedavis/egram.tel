@@ -1,6 +1,8 @@
 ﻿using System;
-using Avalonia;
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using Tel.Egram.Model.Application;
+using Tel.Egram.Views.Application;
 
 namespace Tel.Egram.Application
 {
@@ -17,11 +19,19 @@ namespace Tel.Egram.Application
             Initializing?.Invoke(this, null);
         }
         
-        protected override void OnExiting(object sender, EventArgs e)
+        public override void OnFrameworkInitializationCompleted()
         {
-            Disposing?.Invoke(this, null);
-            
-            base.OnExiting(sender, e);
+            if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                desktop.MainWindow = new MainWindow
+                {
+                    DataContext = new MainWindowModel(),
+                };
+                
+                desktop.Exit += (s, a) => Disposing?.Invoke(this, EventArgs.Empty);
+            }
+
+            base.OnFrameworkInitializationCompleted();
         }
     }
 }

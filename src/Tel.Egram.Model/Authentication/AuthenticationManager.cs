@@ -107,7 +107,7 @@ namespace Tel.Egram.Model.Authentication
                     break;
                         
                 case TdApi.AuthorizationState.AuthorizationStateWaitCode wait:
-                    OnWaitingConfirmCode(model, !wait.IsRegistered);
+                    OnWaitingConfirmCode(model, false /* !wait.IsRegistered */);
                     break;
                         
                 case TdApi.AuthorizationState.AuthorizationStateWaitPassword _:

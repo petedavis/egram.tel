@@ -15,7 +15,7 @@ using Tel.Egram.Services.Utils.Reactive;
 namespace Tel.Egram.Model.Messenger.Explorer
 {
     [AddINotifyPropertyChangedInterface]
-    public class ExplorerModel : ISupportsActivation
+    public class ExplorerModel : IActivatableViewModel
     {
         public bool IsVisible { get; set; } = true;
         

@@ -1,6 +1,7 @@
 ﻿using System;
 using Avalonia;
 using Avalonia.Platform;
+using Avalonia.ReactiveUI;
 using Splat;
 using Tel.Egram.Application;
 using Tel.Egram.Views.Application;
@@ -13,7 +14,8 @@ namespace Tel.Egram
         public static void Main(string[] args)
         {
             ConfigureServices(Locator.CurrentMutable);
-            Run(Locator.Current);
+            BuildAvaloniaApp()
+                .StartWithClassicDesktopLifetime(args);
         }
 
         private static void ConfigureServices(
@@ -32,13 +34,10 @@ namespace Tel.Egram
             services.AddMessenger();
         }
 
-        private static void Run(
-            IDependencyResolver resolver)
+        private static AppBuilder BuildAvaloniaApp()
         {
-            var app = resolver.GetService<MainApplication>();
-            var builder = AppBuilder.Configure(app);
+            var builder = AppBuilder.Configure<MainApplication>();
             var runtime = builder.RuntimePlatform.GetRuntimeInfo();
-            var model = new MainWindowModel();
             
             switch (runtime.OperatingSystem)
             {
@@ -73,9 +72,7 @@ namespace Tel.Egram
 
             builder.UseReactiveUI();
 
-            model.Activator.Activate();
-            builder.Start<MainWindow>(() => model);
-            model.Activator.Deactivate();
+            return builder;
         }
     }
 }

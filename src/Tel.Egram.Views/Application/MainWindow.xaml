@@ -1,4 +1,4 @@
-﻿<Window
+<Window
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:application="clr-namespace:Tel.Egram.Views.Application"
@@ -14,6 +14,7 @@
     MaxHeight="600"
     Title="{Binding WindowTitle}"
     Background="#ffffff"
+    x:Class="Tel.Egram.Views.Application.MainWindow"
     >
     
     <Panel>

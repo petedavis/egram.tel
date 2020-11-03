@@ -9,7 +9,7 @@ namespace Tel.Egram.Application.Styles
     public class RobotoFontFamily : FontFamily
     {
         public RobotoFontFamily()
-            : base ("Roboto", new Uri("resm:Tel.Egram.Application.Fonts?assembly=Tel.Egram.Application"))
+            : base (new Uri("resm:Tel.Egram.Application.Fonts?assembly=Tel.Egram.Application"), "Roboto")
         {
         }
     }

@@ -4,23 +4,28 @@
     <RootNamespace>Tel.Egram.Application</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="0.8.0" />
-    <PackageReference Include="Avalonia.Desktop" Version="0.8.0" />
-    <PackageReference Include="Avalonia.ReactiveUI" Version="0.8.0" />
-    <PackageReference Include="DynamicData" Version="6.6.1.2507" />
-    <PackageReference Include="ReactiveUI" Version="9.0.1" />
-    <PackageReference Include="System.Reactive" Version="4.0.0" />
+    <PackageReference Include="Avalonia" Version="0.9.12" />
+    <PackageReference Include="Avalonia.Desktop" Version="0.9.12" />
+    <PackageReference Include="Avalonia.ReactiveUI" Version="0.9.12" />
+    <PackageReference Include="DynamicData" Version="6.17.14" />
+    <PackageReference Include="ReactiveUI" Version="12.1.5" />
+    <PackageReference Include="System.Reactive" Version="4.4.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="**\*.xaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <AvaloniaResource Include="**\*.xaml">
+      <SubType>Designer</SubType>
+    </AvaloniaResource>
+    <AvaloniaResource Include="Fonts\**\*" />
+    <AvaloniaResource Include="Icons\**\*" />
+    <AvaloniaResource Include="Images\**\*" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="**\*.txt" />
     <EmbeddedResource Include="**\*.png" />
     <EmbeddedResource Include="**\*.ttf" />
-    <Compile Update="**\*.xaml.cs">
-      <DependentUpon>%(Filename)</DependentUpon>
-    </Compile>
-    <EmbeddedResource Include="**\*.xaml">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Tel.Egram.Model\Tel.Egram.Model.csproj" />

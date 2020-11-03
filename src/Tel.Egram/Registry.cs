@@ -42,7 +42,7 @@ namespace Tel.Egram
         {
             services.RegisterLazySingleton(() =>
             {
-                var storage = services.GetService<IStorage>();
+                var storage = Locator.Current.GetService<IStorage>();
                 
                 Client.Log.SetFilePath(Path.Combine(storage.LogDirectory, "tdlib.log"));
                 Client.Log.SetMaxFileSize(1_000_000); // 1MB
@@ -52,21 +52,21 @@ namespace Tel.Egram
 
             services.RegisterLazySingleton(() =>
             {
-                var client = services.GetService<Client>();
+                var client = Locator.Current.GetService<Client>();
                 return new Hub(client);
             });
 
             services.RegisterLazySingleton(() =>
             {
-                var client = services.GetService<Client>();
-                var hub = services.GetService<Hub>();
+                var client = Locator.Current.GetService<Client>();
+                var hub = Locator.Current.GetService<Hub>();
                 return new Dialer(client, hub);
             });
 
             services.RegisterLazySingleton<IAgent>(() =>
             {
-                var hub = services.GetService<Hub>();
-                var dialer = services.GetService<Dialer>();
+                var hub = Locator.Current.GetService<Hub>();
+                var dialer = Locator.Current.GetService<Dialer>();
                 return new Agent(hub, dialer);
             });
         }
@@ -80,13 +80,13 @@ namespace Tel.Egram
             
             services.RegisterLazySingleton<IFileLoader>(() =>
             {
-                var agent = services.GetService<IAgent>();
+                var agent = Locator.Current.GetService<IAgent>();
                 return new FileLoader(agent);
             });
             
             services.RegisterLazySingleton<IFileExplorer>(() =>
             {
-                var platform = services.GetService<IPlatform>();
+                var platform = Locator.Current.GetService<IPlatform>();
                 return new FileExplorer(platform);
             });
             
@@ -94,13 +94,13 @@ namespace Tel.Egram
             
             services.RegisterLazySingleton(() =>
             {
-                var factory = services.GetService<IDatabaseContextFactory>();
+                var factory = Locator.Current.GetService<IDatabaseContextFactory>();
                 return factory.CreateDbContext();
             });
             
             services.RegisterLazySingleton<IKeyValueStorage>(() =>
             {
-                var db = services.GetService<DatabaseContext>();
+                var db = Locator.Current.GetService<DatabaseContext>();
                 return new KeyValueStorage(db);
             });
         }
@@ -112,7 +112,7 @@ namespace Tel.Egram
             
             services.RegisterLazySingleton<IBitmapLoader>(() =>
             {
-                var fileLoader = services.GetService<IFileLoader>();
+                var fileLoader = Locator.Current.GetService<IFileLoader>();
                 return new BitmapLoader(fileLoader);
             });
             
@@ -128,11 +128,11 @@ namespace Tel.Egram
             
             services.RegisterLazySingleton<IAvatarLoader>(() =>
             {
-                var platform = services.GetService<IPlatform>();
-                var storage = services.GetService<IStorage>();
-                var fileLoader = services.GetService<IFileLoader>();
-                var avatarCache = services.GetService<IAvatarCache>();
-                var colorMapper = services.GetService<IColorMapper>();
+                var platform = Locator.Current.GetService<IPlatform>();
+                var storage = Locator.Current.GetService<IStorage>();
+                var fileLoader = Locator.Current.GetService<IFileLoader>();
+                var avatarCache = Locator.Current.GetService<IAvatarCache>();
+                var colorMapper = Locator.Current.GetService<IColorMapper>();
                 
                 return new AvatarLoader(
                     platform,
@@ -154,8 +154,8 @@ namespace Tel.Egram
             
             services.RegisterLazySingleton<IPreviewLoader>(() =>
             {
-                var fileLoader = services.GetService<IFileLoader>();
-                var previewCache = services.GetService<IPreviewCache>();
+                var fileLoader = Locator.Current.GetService<IFileLoader>();
+                var previewCache = Locator.Current.GetService<IPreviewCache>();
                 
                 return new PreviewLoader(
                     fileLoader,
@@ -165,60 +165,60 @@ namespace Tel.Egram
             // chats
             services.RegisterLazySingleton<IChatLoader>(() =>
             {
-                var agent = services.GetService<IAgent>();
+                var agent = Locator.Current.GetService<IAgent>();
                 return new ChatLoader(agent);
             });
             
             services.RegisterLazySingleton<IChatUpdater>(() =>
             {
-                var agent = services.GetService<IAgent>();
+                var agent = Locator.Current.GetService<IAgent>();
                 return new ChatUpdater(agent);
             });
             
             services.RegisterLazySingleton<IFeedLoader>(() =>
             {
-                var agent = services.GetService<IAgent>();
+                var agent = Locator.Current.GetService<IAgent>();
                 return new FeedLoader(agent);
             });
             
             // messages
             services.RegisterLazySingleton<IMessageLoader>(() =>
             {
-                var agent = services.GetService<IAgent>();
+                var agent = Locator.Current.GetService<IAgent>();
                 return new MessageLoader(agent);
             });
             services.RegisterLazySingleton<IMessageSender>(() =>
             {
-                var agent = services.GetService<IAgent>();
+                var agent = Locator.Current.GetService<IAgent>();
                 return new MessageSender(agent);
             });
             
             // notifications
             services.RegisterLazySingleton<INotificationSource>(() =>
             {
-                var agent = services.GetService<IAgent>();
+                var agent = Locator.Current.GetService<IAgent>();
                 return new NotificationSource(agent);
             });
             
             // users
             services.RegisterLazySingleton<IUserLoader>(() =>
             {
-                var agent = services.GetService<IAgent>();
+                var agent = Locator.Current.GetService<IAgent>();
                 return new UserLoader(agent);
             });
             
             // auth
             services.RegisterLazySingleton<IAuthenticator>(() =>
             {
-                var agent = services.GetService<IAgent>();
-                var storage = services.GetService<IStorage>();
+                var agent = Locator.Current.GetService<IAgent>();
+                var storage = Locator.Current.GetService<IStorage>();
                 return new Authenticator(agent, storage);
             });
             
             // settings
             services.RegisterLazySingleton<IProxyManager>(() =>
             {
-                var agent = services.GetService<IAgent>();
+                var agent = Locator.Current.GetService<IAgent>();
                 return new ProxyManager(agent);
             });
         }
@@ -237,10 +237,10 @@ namespace Tel.Egram
                 
                 application.Initializing += (sender, args) =>
                 {
-                    var db = services.GetService<DatabaseContext>();
+                    var db = Locator.Current.GetService<DatabaseContext>();
                     db.Database.Migrate();
                 
-                    var hub = services.GetService<Hub>();
+                    var hub = Locator.Current.GetService<Hub>();
                     var task = Task.Factory.StartNew(
                         () => hub.Start(),
                         TaskCreationOptions.LongRunning);
@@ -257,7 +257,7 @@ namespace Tel.Egram
 
                 application.Disposing += (sender, args) =>
                 {
-                    var hub = services.GetService<Hub>();
+                    var hub = Locator.Current.GetService<Hub>();
                     hub.Stop();
                 };
                 
@@ -296,10 +296,10 @@ namespace Tel.Egram
             
             services.RegisterLazySingleton<IMessageModelFactory>(() =>
             {
-                var basicMessageModelFactory = services.GetService<IBasicMessageModelFactory>();
-                var noteMessageModelFactory = services.GetService<INoteMessageModelFactory>();
-                var specialMessageModelFactory = services.GetService<ISpecialMessageModelFactory>();
-                var visualMessageModelFactory = services.GetService<IVisualMessageModelFactory>();
+                var basicMessageModelFactory = Locator.Current.GetService<IBasicMessageModelFactory>();
+                var noteMessageModelFactory = Locator.Current.GetService<INoteMessageModelFactory>();
+                var specialMessageModelFactory = Locator.Current.GetService<ISpecialMessageModelFactory>();
+                var visualMessageModelFactory = Locator.Current.GetService<IVisualMessageModelFactory>();
                 
                 var stringFormatter = new StringFormatter();
                 
